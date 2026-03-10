@@ -18,7 +18,7 @@ ALTER TABLE contacts
 ADD COLUMN IF NOT EXISTS responded_at TIMESTAMP WITH TIME ZONE;
 
 ALTER TABLE contacts 
-ADD COLUMN IF NOT EXISTS responded_by UUID REFERENCES admins(id);
+ADD COLUMN IF NOT EXISTS responded_by INTEGER REFERENCES admins(id);
 
 -- Create index for status filtering
 CREATE INDEX IF NOT EXISTS idx_contacts_status ON contacts(status);
@@ -40,7 +40,7 @@ ALTER TABLE job_applications
 ADD COLUMN IF NOT EXISTS reviewed_at TIMESTAMP WITH TIME ZONE;
 
 ALTER TABLE job_applications 
-ADD COLUMN IF NOT EXISTS reviewed_by UUID REFERENCES admins(id);
+ADD COLUMN IF NOT EXISTS reviewed_by INTEGER REFERENCES admins(id);
 
 -- Create index for status filtering
 CREATE INDEX IF NOT EXISTS idx_job_applications_status ON job_applications(status);
@@ -62,7 +62,7 @@ ALTER TABLE community_requests
 ADD COLUMN IF NOT EXISTS processed_at TIMESTAMP WITH TIME ZONE;
 
 ALTER TABLE community_requests 
-ADD COLUMN IF NOT EXISTS processed_by UUID REFERENCES admins(id);
+ADD COLUMN IF NOT EXISTS processed_by INTEGER REFERENCES admins(id);
 
 -- Create index for status filtering
 CREATE INDEX IF NOT EXISTS idx_community_requests_status ON community_requests(status);
@@ -84,7 +84,7 @@ ALTER TABLE resource_enquiries
 ADD COLUMN IF NOT EXISTS responded_at TIMESTAMP WITH TIME ZONE;
 
 ALTER TABLE resource_enquiries 
-ADD COLUMN IF NOT EXISTS responded_by UUID REFERENCES admins(id);
+ADD COLUMN IF NOT EXISTS responded_by INTEGER REFERENCES admins(id);
 
 -- Create index for status filtering
 CREATE INDEX IF NOT EXISTS idx_resource_enquiries_status ON resource_enquiries(status);
@@ -93,41 +93,57 @@ CREATE INDEX IF NOT EXISTS idx_resource_enquiries_status ON resource_enquiries(s
 -- RLS POLICIES FOR UPDATE/DELETE
 -- ==========================================
 
--- Contacts: Allow admins to update and delete
-CREATE POLICY IF NOT EXISTS "Admins can update contacts"
+-- Contacts: Allow service_role to update and delete
+DROP POLICY IF EXISTS "Admins can update contacts" ON contacts;
+CREATE POLICY "Admins can update contacts"
 ON contacts FOR UPDATE
-USING (auth.uid() IN (SELECT id FROM admins));
+TO service_role
+USING (true);
 
-CREATE POLICY IF NOT EXISTS "Admins can delete contacts"
+DROP POLICY IF EXISTS "Admins can delete contacts" ON contacts;
+CREATE POLICY "Admins can delete contacts"
 ON contacts FOR DELETE
-USING (auth.uid() IN (SELECT id FROM admins));
+TO service_role
+USING (true);
 
--- Job Applications: Allow admins to update and delete
-CREATE POLICY IF NOT EXISTS "Admins can update job applications"
+-- Job Applications: Allow service_role to update and delete
+DROP POLICY IF EXISTS "Admins can update job applications" ON job_applications;
+CREATE POLICY "Admins can update job applications"
 ON job_applications FOR UPDATE
-USING (auth.uid() IN (SELECT id FROM admins));
+TO service_role
+USING (true);
 
-CREATE POLICY IF NOT EXISTS "Admins can delete job applications"
+DROP POLICY IF EXISTS "Admins can delete job applications" ON job_applications;
+CREATE POLICY "Admins can delete job applications"
 ON job_applications FOR DELETE
-USING (auth.uid() IN (SELECT id FROM admins));
+TO service_role
+USING (true);
 
--- Community Requests: Allow admins to update and delete
-CREATE POLICY IF NOT EXISTS "Admins can update community requests"
+-- Community Requests: Allow service_role to update and delete
+DROP POLICY IF EXISTS "Admins can update community requests" ON community_requests;
+CREATE POLICY "Admins can update community requests"
 ON community_requests FOR UPDATE
-USING (auth.uid() IN (SELECT id FROM admins));
+TO service_role
+USING (true);
 
-CREATE POLICY IF NOT EXISTS "Admins can delete community requests"
+DROP POLICY IF EXISTS "Admins can delete community requests" ON community_requests;
+CREATE POLICY "Admins can delete community requests"
 ON community_requests FOR DELETE
-USING (auth.uid() IN (SELECT id FROM admins));
+TO service_role
+USING (true);
 
--- Resource Enquiries: Allow admins to update and delete
-CREATE POLICY IF NOT EXISTS "Admins can update resource enquiries"
+-- Resource Enquiries: Allow service_role to update and delete
+DROP POLICY IF EXISTS "Admins can update resource enquiries" ON resource_enquiries;
+CREATE POLICY "Admins can update resource enquiries"
 ON resource_enquiries FOR UPDATE
-USING (auth.uid() IN (SELECT id FROM admins));
+TO service_role
+USING (true);
 
-CREATE POLICY IF NOT EXISTS "Admins can delete resource enquiries"
+DROP POLICY IF EXISTS "Admins can delete resource enquiries" ON resource_enquiries;
+CREATE POLICY "Admins can delete resource enquiries"
 ON resource_enquiries FOR DELETE
-USING (auth.uid() IN (SELECT id FROM admins));
+TO service_role
+USING (true);
 
 -- ==========================================
 -- STATUS VALUE CONSTRAINTS (Optional)

@@ -2,6 +2,7 @@ const express = require('express');
 const adminAuth = require('../controllers/adminAuth.controller');
 const adminUser = require('../controllers/adminUser.controller');
 const adminController = require('../controllers/admin.controller');
+const { uploadImage } = require('../controllers/upload.controller');
 const { getSettings, updateSettings } = require("../controllers/settings.controller");
 const { requireAdminAuth, requireSuperAdmin } = require('../middlewares/auth.middleware');
 
@@ -41,5 +42,8 @@ router.delete('/users/:id', requireAdminAuth, requireSuperAdmin, adminUser.delet
 // Site Settings routes
 router.get("/settings", requireAdminAuth, getSettings);
 router.put("/settings/:id", requireAdminAuth, requireSuperAdmin, updateSettings);
+
+// Media upload
+router.post('/upload', requireAdminAuth, uploadImage);
 
 module.exports = router;
