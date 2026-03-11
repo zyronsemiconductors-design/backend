@@ -21,6 +21,12 @@ const getAllAdmins = async (req, res) => {
 const createAdmin = async (req, res) => {
     try {
         const { full_name, email, password, role } = req.body;
+        if (!SUPABASE_SERVICE_ROLE_KEY) {
+            return res.status(500).json({ error: 'Service role key not configured' });
+        }
+        if (!full_name || !email || !password) {
+            return res.status(400).json({ error: 'full_name, email, and password are required' });
+        }
         
         const serviceRoleSupabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -33,7 +39,7 @@ const createAdmin = async (req, res) => {
 
         if (error) {
             if (error.code === '23505') return res.status(400).json({ error: 'Email already exists' });
-            throw error;
+            return res.status(500).json({ error: error.message || 'Failed to create admin' });
         }
 
         res.status(201).json(data[0]);
