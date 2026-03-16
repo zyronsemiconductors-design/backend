@@ -2,7 +2,7 @@ const transporter = require("../config/mail.config");
 const { EMAIL_USER } = require('../config/env');
 const dbService = require('./db.service');
 
-exports.sendContactMail = async ({ name, email, message, phone }) => {
+exports.sendContactMail = async ({ name, email, message }) => {
   const htmlTemplate = `
   <div style="font-family: Arial, sans-serif; background: #f4f6f8; padding: 30px;">
     <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 8px; overflow: hidden;">
@@ -25,12 +25,6 @@ exports.sendContactMail = async ({ name, email, message, phone }) => {
             <td style="padding: 8px; font-weight: bold;">Email</td>
             <td style="padding: 8px;">${email}</td>
           </tr>
-          ${phone ? `
-          <tr>
-            <td style="padding: 8px; font-weight: bold;">Phone</td>
-            <td style="padding: 8px;">${phone}</td>
-          </tr>
-          ` : ''}
           <tr>
             <td style="padding: 8px; font-weight: bold;">Message</td>
             <td style="padding: 8px;">${message}</td>

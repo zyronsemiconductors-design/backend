@@ -46,7 +46,6 @@ class DBService {
         .insert([{
           name: data.name,
           email: data.email,
-          phone: data.phone,
           message: data.message,
           created_at: new Date().toISOString()
         }]);

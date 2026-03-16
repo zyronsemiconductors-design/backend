@@ -29,16 +29,10 @@ exports.contactValidation = [
         .notEmpty()
         .withMessage("Message is required"),
 
-    // Phone validation: optional
-    body("phone")
-        .optional()
-        .trim()
-        .isMobilePhone("any")
-        .withMessage("Valid phone number required"),
 
     // Reject any unexpected fields
     (req, res, next) => {
-        const allowedFields = ['name', 'email', 'message', 'phone'];
+        const allowedFields = ['name', 'email', 'message'];
         const receivedFields = Object.keys(req.body);
         const unexpectedFields = receivedFields.filter(field => !allowedFields.includes(field));
 
