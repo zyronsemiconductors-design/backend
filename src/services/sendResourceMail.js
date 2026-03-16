@@ -1,6 +1,7 @@
 // services/resourceMail.service.js
 const transporter = require("../config/mail.config");
 const { EMAIL_USER } = require('../config/env');
+const dbService = require('./db.service');
 
 exports.sendResourceMail = async ({ name, email, topic, message }) => {
     const htmlTemplate = `
@@ -49,11 +50,9 @@ exports.sendResourceMail = async ({ name, email, topic, message }) => {
   </div>
   `;
 
-    const recipients = [
-        // process.env.EMAIL_GENERAL,
-        // process.env.EMAIL_HR,
-        EMAIL_USER
-    ].filter(Boolean);
+    const generalSettings = await dbService.getSetting('general');
+    const receiverEmail = generalSettings?.contact_email || EMAIL_USER;
+    const recipients = [receiverEmail].filter(Boolean);
 
     try {
         // Try to send the email, but don't fail if email is disabled

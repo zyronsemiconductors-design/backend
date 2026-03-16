@@ -8,6 +8,31 @@ class DBService {
     this.isSupabaseAvailable = !!this.supabase;
   }
 
+  // Site settings
+  async getSetting(id) {
+    if (!this.isSupabaseAvailable) {
+      return null;
+    }
+
+    try {
+      const { data, error } = await this.supabase
+        .from('site_settings')
+        .select('value')
+        .eq('id', id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching site setting:', error);
+        return null;
+      }
+
+      return data?.value || null;
+    } catch (error) {
+      console.error('Unexpected error fetching site setting:', error);
+      return null;
+    }
+  }
+
   // Contact form submissions
   async createContact(data) {
     if (!this.isSupabaseAvailable) {
@@ -21,6 +46,7 @@ class DBService {
         .insert([{
           name: data.name,
           email: data.email,
+          phone: data.phone,
           message: data.message,
           created_at: new Date().toISOString()
         }]);

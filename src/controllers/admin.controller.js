@@ -15,6 +15,7 @@ const adminController = {
         id: contact.id,
         name: contact.name,
         email: contact.email,
+        phone: contact.phone,
         message: contact.message,
         created_at: contact.created_at
       }));

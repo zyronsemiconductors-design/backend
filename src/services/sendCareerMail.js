@@ -1,6 +1,7 @@
 // services/careerMail.service.js
 const transporter = require("../config/mail.config");
 const { EMAIL_USER } = require('../config/env');
+const dbService = require('./db.service');
 
 exports.sendCareerMail = async ({
     name,
@@ -66,11 +67,14 @@ exports.sendCareerMail = async ({
         ]
         : [];
 
+    const generalSettings = await dbService.getSetting('general');
+    const receiverEmail = generalSettings?.contact_email || EMAIL_USER;
+
     try {
         // Try to send the email, but don't fail if email is disabled
         const result = await transporter.sendMail({
             from: `"Zyron Careers" <${EMAIL_USER}>`,
-            to: EMAIL_USER,
+            to: receiverEmail,
             replyTo: email,
             subject: `Job Application: ${position} - ${name}`,
             html: htmlTemplate,

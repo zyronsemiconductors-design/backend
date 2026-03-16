@@ -1,7 +1,8 @@
 const transporter = require("../config/mail.config");
 const { EMAIL_USER } = require('../config/env');
+const dbService = require('./db.service');
 
-exports.sendContactMail = async ({ name, email, message }) => {
+exports.sendContactMail = async ({ name, email, message, phone }) => {
   const htmlTemplate = `
   <div style="font-family: Arial, sans-serif; background: #f4f6f8; padding: 30px;">
     <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 8px; overflow: hidden;">
@@ -24,6 +25,12 @@ exports.sendContactMail = async ({ name, email, message }) => {
             <td style="padding: 8px; font-weight: bold;">Email</td>
             <td style="padding: 8px;">${email}</td>
           </tr>
+          ${phone ? `
+          <tr>
+            <td style="padding: 8px; font-weight: bold;">Phone</td>
+            <td style="padding: 8px;">${phone}</td>
+          </tr>
+          ` : ''}
           <tr>
             <td style="padding: 8px; font-weight: bold;">Message</td>
             <td style="padding: 8px;">${message}</td>
@@ -45,11 +52,9 @@ exports.sendContactMail = async ({ name, email, message }) => {
   </div>
   `;
 
-  const recipients = [
-    // process.env.EMAIL_GENERAL,
-    // process.env.EMAIL_HR,
-    EMAIL_USER
-  ].filter(Boolean); // remove undefined if any
+  const generalSettings = await dbService.getSetting('general');
+  const receiverEmail = generalSettings?.contact_email || EMAIL_USER;
+  const recipients = [receiverEmail].filter(Boolean);
 
   try {
     // Try to send the email, but don't fail if email is disabled

@@ -3,19 +3,19 @@ const dbService = require("../services/db.service");
 
 exports.contactController = async (req, res) => {
     try {
-        const { name, email, message } = req.body;
+        const { name, email, message, phone } = req.body;
         
         // Save contact to database
         try {
             if (dbService && typeof dbService.createContact === 'function') {
-                await dbService.createContact({ name, email, message });
+                await dbService.createContact({ name, email, message, phone });
             }
         } catch (dbError) {
             console.error("Database error:", dbError);
             // Continue with sending email even if DB save fails
         }
 
-        await sendContactMail({ name, email, message });
+        await sendContactMail({ name, email, message, phone });
 
         return res.status(200).json({
             message: "Message sent successfully",
